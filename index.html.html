@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vim — Cheatsheet Senior Dev</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d0d0d; --surface: #141414; --surface2: #1a1a1a;
+    --border: #2a2a2a; --accent: #c8f135; --text: #e8e8e0; --muted: #666;
+    --mono: 'JetBrains Mono', monospace; --sans: 'Syne', sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.6; min-height: 100vh; }
+  header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0;
+    background: rgba(13,13,13,0.96);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+    display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
+  }
+  .logo { font-size: 1.8rem; font-weight: 800; letter-spacing: -0.04em; line-height: 1; }
+  .logo span { color: var(--accent); }
+  .tagline { font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; border-left: 2px solid var(--border); padding-left: 1rem; }
+  .search-wrap { margin-left: auto; position: relative; }
+  #search {
+    background: var(--surface2); border: 1px solid var(--border); color: var(--text);
+    font-family: var(--mono); font-size: 13px; padding: 8px 16px 8px 38px;
+    border-radius: 6px; width: 260px; outline: none; transition: border-color 0.2s;
+  }
+  #search:focus { border-color: var(--accent); }
+  #search::placeholder { color: var(--muted); }
+  .si { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 15px; pointer-events: none; }
+  .tabs-bar { display: flex; gap: 4px; padding: 0.8rem 2rem; border-bottom: 1px solid var(--border); flex-wrap: wrap; background: var(--surface); }
+  .tab { font-family: var(--mono); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; padding: 5px 12px; border-radius: 4px; border: 1px solid transparent; cursor: pointer; background: transparent; color: var(--muted); transition: all 0.15s; }
+  .tab:hover { color: var(--text); border-color: var(--border); }
+  .tab.active { background: var(--accent); color: #0d0d0d; border-color: var(--accent); font-weight: 700; }
+  .main { padding: 1.5rem 2rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 1rem; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; transition: border-color 0.2s; }
+  .card:hover { border-color: #3a3a3a; }
+  .card-header { padding: 10px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 9px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .card-title { font-family: var(--sans); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text); }
+  .cmd-count { margin-left: auto; font-family: var(--mono); font-size: 10px; color: var(--muted); }
+  .cmd-list { padding: 2px 0; }
+  .cmd-row { display: flex; align-items: flex-start; gap: 10px; padding: 5px 14px; border-bottom: 1px solid rgba(255,255,255,0.03); transition: background 0.1s; }
+  .cmd-row:last-child { border-bottom: none; }
+  .cmd-row:hover { background: var(--surface2); }
+  kbd { font-family: var(--mono); font-size: 11px; font-weight: 600; background: var(--surface2); border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 4px; padding: 2px 8px; white-space: nowrap; color: var(--accent); flex-shrink: 0; min-width: 100px; text-align: center; }
+  .desc { font-size: 12.5px; color: #aaa; line-height: 1.5; padding-top: 2px; }
+  .tip { padding: 7px 14px 9px; font-family: var(--mono); font-size: 11px; color: var(--muted); background: rgba(200,241,53,0.04); border-top: 1px solid rgba(200,241,53,0.12); line-height: 1.5; }
+  .tip::before { content: '// '; color: var(--accent); }
+  .no-results { grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--muted); font-family: var(--mono); font-size: 14px; }
+  footer { text-align: center; padding: 2rem; border-top: 1px solid var(--border); font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
+  ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: var(--bg); } ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">V<span>im</span></div>
+  <div class="tagline">Senior Developer Cheatsheet</div>
+  <div class="search-wrap">
+    <span class="si">⌕</span>
+    <input type="text" id="search" placeholder="Rechercher une commande..." oninput="buildGrid()">
+  </div>
+</header>
+
+<div class="tabs-bar" id="tabs">
+  <button class="tab active" data-cat="all">Toutes</button>
+  <button class="tab" data-cat="navigation">Navigation</button>
+  <button class="tab" data-cat="edition">Édition</button>
+  <button class="tab" data-cat="recherche">Recherche</button>
+  <button class="tab" data-cat="visual">Mode Visuel</button>
+  <button class="tab" data-cat="macros">Macros</button>
+  <button class="tab" data-cat="registres">Registres</button>
+  <button class="tab" data-cat="fenetres">Fenêtres</button>
+  <button class="tab" data-cat="fichiers">Fichiers</button>
+</div>
+
+<main class="main">
+  <div class="grid" id="grid"></div>
+</main>
+
+<footer>sources : vim.rtorr.com &nbsp;·&nbsp; devhints.io/vim &nbsp;·&nbsp; vimhelp.org</footer>
+
+<script>
+const S = [
+  { cat:"navigation", title:"Navigation rapide", color:"#c8f135",
+    tip:"Préfixez un chiffre pour répéter : 5j descend 5 lignes, 3w saute 3 mots.",
+    cmds:[
+      {k:"h j k l", d:"Gauche / bas / haut / droite"},
+      {k:"w / b", d:"Mot suivant / précédent (début)"},
+      {k:"e / ge", d:"Fin de mot suivant / précédent"},
+      {k:"W / B / E", d:"Idem, ponctuation incluse"},
+      {k:"0 / ^", d:"Début de ligne / premier char non-blanc"},
+      {k:"$ / g_", d:"Fin de ligne / dernier char non-blanc"},
+      {k:"gg / G", d:"Première / dernière ligne du fichier"},
+      {k:"42G", d:"Aller à la ligne 42"},
+      {k:"H / M / L", d:"Haut / milieu / bas de l'écran visible"},
+      {k:"Ctrl+d / Ctrl+u", d:"Descend / monte d'une demi-page"},
+      {k:"Ctrl+f / Ctrl+b", d:"Page suivante / précédente"},
+      {k:"zz / zt / zb", d:"Centrer / haut / bas l'écran sur curseur"},
+      {k:"%", d:"Aller à la parenthèse/accolade correspondante"},
+      {k:"{ / }", d:"Paragraphe / bloc précédent / suivant"},
+      {k:"fx / Fx", d:"Chercher caractère x avant / arrière"},
+      {k:"tx / Tx", d:"Sauter juste avant le caractère x"},
+      {k:"; / ,", d:"Répéter f/t/F/T en avant / en arrière"},
+      {k:"gd / gD", d:"Déclaration locale / globale sous curseur"},
+    ]
+  },
+  { cat:"navigation", title:"Marques et sauts", color:"#c8f135",
+    tip:"Les marques a-z sont locales au fichier, A-Z sont globales entre fichiers.",
+    cmds:[
+      {k:"ma", d:"Poser la marque 'a' à la position actuelle"},
+      {k:"`a", d:"Sauter exactement à la marque 'a'"},
+      {k:"'a", d:"Sauter au début de la ligne de la marque 'a'"},
+      {k:"``", d:"Revenir à la position avant le dernier saut"},
+      {k:"`.", d:"Aller au dernier emplacement modifié"},
+      {k:"`0", d:"Position à la dernière fermeture de Vim"},
+      {k:"Ctrl+o / Ctrl+i", d:"Reculer / avancer dans la liste des sauts"},
+      {k:"g; / g,", d:"Reculer / avancer dans les changements"},
+      {k:":jumps", d:"Lister l'historique des sauts"},
+      {k:":marks", d:"Afficher toutes les marques"},
+      {k:"Ctrl+]", d:"Sauter vers le tag sous le curseur (ctags)"},
+    ]
+  },
+  { cat:"edition", title:"Insertion de texte", color:"#35f1c8",
+    tip:"Ctrl+o en mode insert permet d'exécuter une commande normale puis revenir.",
+    cmds:[
+      {k:"i / I", d:"Insérer avant curseur / début de ligne"},
+      {k:"a / A", d:"Ajouter après curseur / fin de ligne"},
+      {k:"o / O", d:"Nouvelle ligne en dessous / au-dessus"},
+      {k:"ea", d:"Ajouter à la fin du mot courant"},
+      {k:"Ctrl+n / Ctrl+p", d:"Autocomplétion suivante / précédente"},
+      {k:"Ctrl+r a", d:"Coller le registre 'a' en mode insert"},
+      {k:"Ctrl+t / Ctrl+d", d:"Indenter / dé-indenter en mode insert"},
+      {k:"Ctrl+w", d:"Supprimer le mot avant curseur (insert)"},
+      {k:"Esc / Ctrl+c", d:"Quitter le mode insertion"},
+    ]
+  },
+  { cat:"edition", title:"Opérateurs d'édition", color:"#35f1c8",
+    tip:"La puissance de Vim = opérateur + motion : dw, ci\", y3j, >iB, etc.",
+    cmds:[
+      {k:"r / R", d:"Remplacer un caractère / mode remplacement"},
+      {k:"ciw", d:"Changer le mot entier (change inner word)"},
+      {k:"ci\" / ci(", d:"Changer le contenu entre \" ou ("},
+      {k:"cw / ce / cc", d:"Changer fin de mot / mot / ligne entière"},
+      {k:"C", d:"Changer jusqu'à la fin de la ligne"},
+      {k:"s / S", d:"Substituer un caractère / toute la ligne"},
+      {k:"J / gJ", d:"Joindre la ligne du bas (avec / sans espace)"},
+      {k:"gu{motion}", d:"Passer en minuscules"},
+      {k:"gU{motion}", d:"Passer en majuscules"},
+      {k:"g~{motion}", d:"Inverser la casse"},
+      {k:"xp", d:"Transposer deux caractères"},
+      {k:".", d:"Répéter la dernière commande (très puissant !)"},
+      {k:"u / Ctrl+r", d:"Annuler / Refaire"},
+    ]
+  },
+  { cat:"edition", title:"Couper, copier, coller", color:"#35f1c8",
+    tip:"Tout 'delete' écrase le registre — utilisez \"_d pour éviter ça.",
+    cmds:[
+      {k:"yy / Y", d:"Copier la ligne / jusqu'à la fin de ligne"},
+      {k:"yiw / yaw", d:"Copier le mot courant / avec espace autour"},
+      {k:"yi( / ya(", d:"Copier dans / avec les parenthèses"},
+      {k:"y$", d:"Copier jusqu'à la fin de ligne"},
+      {k:"2yy", d:"Copier 2 lignes"},
+      {k:"dd / D", d:"Couper la ligne / jusqu'à la fin"},
+      {k:"diw / daw", d:"Supprimer le mot / avec espace autour"},
+      {k:"di( / da(", d:"Supprimer dans / avec les parenthèses"},
+      {k:":3,5d", d:"Supprimer les lignes 3 à 5"},
+      {k:":.,$d", d:"Supprimer de la ligne courante à la fin"},
+      {k:":g/pattern/d", d:"Supprimer toutes les lignes avec pattern"},
+      {k:":g!/pattern/d", d:"Supprimer toutes les lignes SANS pattern"},
+      {k:"p / P", d:"Coller après / avant le curseur"},
+      {k:"gp / gP", d:"Coller et laisser curseur après le texte"},
+      {k:"]p", d:"Coller en ajustant l'indentation"},
+      {k:"x", d:"Supprimer le caractère sous le curseur"},
+    ]
+  },
+  { cat:"edition", title:"Indentation", color:"#35f1c8",
+    cmds:[
+      {k:">> / <<", d:"Indenter / dé-indenter la ligne courante"},
+      {k:">% / <%", d:"Indenter / dé-indenter un bloc () ou {}"},
+      {k:">ib / >iB", d:"Indenter l'intérieur de () / {}"},
+      {k:"=iB / =%", d:"Ré-indenter bloc {} / () automatiquement"},
+      {k:"gg=G", d:"Ré-indenter tout le fichier"},
+      {k:"3==", d:"Ré-indenter 3 lignes"},
+    ]
+  },
+  { cat:"recherche", title:"Recherche et remplacement", color:"#f1a035",
+    tip:"\\v active le mode 'very magic' : regex PCRE sans besoin d'échapper.",
+    cmds:[
+      {k:"/pattern", d:"Rechercher vers l'avant"},
+      {k:"?pattern", d:"Rechercher vers l'arrière"},
+      {k:"n / N", d:"Occurrence suivante / précédente"},
+      {k:"* / #", d:"Chercher le mot sous curseur avant / arrière"},
+      {k:":%s/old/new/g", d:"Remplacer dans tout le fichier"},
+      {k:":%s/old/new/gc", d:"Remplacer avec confirmation interactive"},
+      {k:":s/old/new/g", d:"Remplacer sur la ligne courante"},
+      {k:":5,12s/a/b/g", d:"Remplacer sur les lignes 5 à 12"},
+      {k:"\\vpattern", d:"Regex 'very magic' (style PCRE étendu)"},
+      {k:":noh", d:"Effacer le surlignage de recherche"},
+    ]
+  },
+  { cat:"recherche", title:"Recherche multi-fichiers", color:"#f1a035",
+    tip:":vim /foo/ **/* cherche récursivement dans tous les sous-dossiers.",
+    cmds:[
+      {k:":vim /foo/ **/*", d:"Chercher dans tous les fichiers (vimgrep)"},
+      {k:":copen / :ccl", d:"Ouvrir / fermer la fenêtre quickfix"},
+      {k:":cn / :cp", d:"Résultat suivant / précédent (quickfix)"},
+      {k:"K", d:"Ouvrir la man page du mot sous le curseur"},
+    ]
+  },
+  { cat:"visual", title:"Mode visuel", color:"#f135a0",
+    tip:"Ctrl+v + I permet d'insérer du texte sur plusieurs lignes simultanément.",
+    cmds:[
+      {k:"v", d:"Mode visuel caractère par caractère"},
+      {k:"V", d:"Mode visuel ligne par ligne"},
+      {k:"Ctrl+v", d:"Mode visuel par blocs (colonnes)"},
+      {k:"o / O", d:"Aller à l'autre extrémité de la sélection"},
+      {k:"aw / iw", d:"Sélectionner un mot avec / sans espace"},
+      {k:"ab / ib", d:"Sélectionner bloc () avec / sans parenthèses"},
+      {k:"aB / iB", d:"Sélectionner bloc {} avec / sans accolades"},
+      {k:"at / it", d:"Sélectionner bloc de tags HTML avec / sans"},
+      {k:"y / d", d:"Copier / couper la sélection"},
+      {k:"> / <", d:"Indenter / dé-indenter la sélection"},
+      {k:"~ / u / U", d:"Inverser / minuscule / majuscule la sélection"},
+      {k:"I (Ctrl+v)", d:"Insérer texte sur plusieurs colonnes"},
+    ]
+  },
+  { cat:"macros", title:"Macros", color:"#a78bfa",
+    tip:"qa → enregistrer, q → stop, @a → lancer, 100@a → 100x. qA pour append.",
+    cmds:[
+      {k:"qa", d:"Commencer enregistrement dans registre 'a'"},
+      {k:"q", d:"Arrêter l'enregistrement de la macro"},
+      {k:"@a", d:"Exécuter la macro 'a'"},
+      {k:"@@", d:"Ré-exécuter la dernière macro lancée"},
+      {k:"10@a", d:"Exécuter la macro 'a' 10 fois"},
+      {k:"qA", d:"Ajouter des commandes à la macro 'a' (append)"},
+      {k:":let @a='...'", d:"Écrire/modifier une macro directement"},
+    ]
+  },
+  { cat:"registres", title:"Registres", color:"#38bdf8",
+    tip:"Registres spéciaux : 0=dernier yank, %=fichier, /=recherche, _=black hole.",
+    cmds:[
+      {k:":reg", d:"Afficher le contenu de tous les registres"},
+      {k:"\"ay", d:"Copier dans le registre 'a'"},
+      {k:"\"ap", d:"Coller depuis le registre 'a'"},
+      {k:"\"+y", d:"Copier vers le presse-papiers système"},
+      {k:"\"+p", d:"Coller depuis le presse-papiers système"},
+      {k:"\"0p", d:"Coller depuis le registre yank (pas delete)"},
+      {k:"\"_d", d:"Supprimer sans écraser le registre (black hole)"},
+      {k:"Ctrl+r a", d:"En insert : coller le registre 'a'"},
+      {k:"Ctrl+r +", d:"En insert : coller le presse-papiers"},
+    ]
+  },
+  { cat:"fenetres", title:"Fenêtres et splits", color:"#4ade80",
+    tip:"Ctrl+w puis h/j/k/l pour naviguer entre les splits comme entre les lignes.",
+    cmds:[
+      {k:"Ctrl+ws / :sp", d:"Split horizontal"},
+      {k:"Ctrl+wv / :vsp", d:"Split vertical"},
+      {k:":sp file", d:"Ouvrir un fichier en split horizontal"},
+      {k:":vsp file", d:"Ouvrir un fichier en split vertical"},
+      {k:"Ctrl+ww", d:"Basculer entre les fenêtres (cycle)"},
+      {k:"Ctrl+wh/j/k/l", d:"Naviguer : gauche / bas / haut / droite"},
+      {k:"Ctrl+wH/J/K/L", d:"Déplacer la fenêtre (pleine taille)"},
+      {k:"Ctrl+w=", d:"Égaliser la taille de toutes les fenêtres"},
+      {k:"Ctrl+wq", d:"Fermer la fenêtre courante"},
+      {k:"Ctrl+wx", d:"Échanger avec la fenêtre suivante"},
+      {k:"Ctrl+wT", d:"Déplacer le split dans un nouvel onglet"},
+    ]
+  },
+  { cat:"fenetres", title:"Onglets (tabs)", color:"#4ade80",
+    tip:":tabdo %s/foo/bar/g — exécuter une commande sur tous les onglets.",
+    cmds:[
+      {k:":tabnew file", d:"Ouvrir un fichier dans un nouvel onglet"},
+      {k:"gt / gT", d:"Onglet suivant / précédent"},
+      {k:"3gt", d:"Aller à l'onglet n°3"},
+      {k:":tabm 2", d:"Déplacer l'onglet courant à la position 2"},
+      {k:":tabc / :tabo", d:"Fermer l'onglet / fermer tous les autres"},
+      {k:":tabdo cmd", d:"Exécuter une commande sur tous les onglets"},
+    ]
+  },
+  { cat:"fichiers", title:"Buffers et fichiers", color:"#fb923c",
+    tip:"Les buffers sont la façon native de Vim de gérer plusieurs fichiers ouverts.",
+    cmds:[
+      {k:":e file", d:"Ouvrir un fichier dans le buffer courant"},
+      {k:":ls / :buffers", d:"Lister tous les buffers ouverts"},
+      {k:":bn / :bp", d:"Buffer suivant / précédent"},
+      {k:":b3", d:"Aller au buffer n°3"},
+      {k:":b filename", d:"Aller au buffer par nom de fichier"},
+      {k:":bd", d:"Fermer (delete) le buffer courant"},
+      {k:":w", d:"Sauvegarder le fichier"},
+      {k:":wq / ZZ", d:"Sauvegarder et quitter"},
+      {k:":q! / ZQ", d:"Quitter sans sauvegarder"},
+      {k:":wqa", d:"Sauvegarder et quitter tous les onglets"},
+      {k:":w !sudo tee %", d:"Sauvegarder avec sudo (sans relancer vim)"},
+      {k:":sav newname", d:"Sauvegarder sous un nouveau nom"},
+    ]
+  },
+  { cat:"fichiers", title:"Pliage (folding) et diff", color:"#fb923c",
+    tip:"za en permanence pour naviguer dans du code dense. zA pour récursivement.",
+    cmds:[
+      {k:"za / zA", d:"Ouvrir/fermer un pli / récursivement"},
+      {k:"zo / zc", d:"Ouvrir / fermer le pli sous le curseur"},
+      {k:"zr / zm", d:"Réduire / augmenter tous les plis d'un niveau"},
+      {k:"zf{motion}", d:"Créer un pli manuellement"},
+      {k:"zd", d:"Supprimer le pli courant"},
+      {k:"]c / [c", d:"Prochain / précédent changement (vimdiff)"},
+      {k:"do / dp", d:"Obtenir / pousser la différence (diff)"},
+      {k:":diffthis", d:"Inclure la fenêtre courante dans le diff"},
+      {k:":diffo", d:"Désactiver le mode diff sur la fenêtre"},
+    ]
+  },
+];
+
+let activeTab = 'all';
+
+function buildGrid() {
+  const query = document.getElementById('search').value.toLowerCase().trim();
+  const grid = document.getElementById('grid');
+  const sections = S.filter(s => activeTab === 'all' || s.cat === activeTab);
+  const html = sections.map(sec => {
+    const cmds = sec.cmds.filter(c => !query || c.k.toLowerCase().includes(query) || c.d.toLowerCase().includes(query));
+    if (!cmds.length) return '';
+    return `<div class="card">
+      <div class="card-header">
+        <span class="dot" style="background:${sec.color}"></span>
+        <span class="card-title">${sec.title}</span>
+        <span class="cmd-count">${cmds.length}</span>
+      </div>
+      <div class="cmd-list">
+        ${cmds.map(c=>`<div class="cmd-row"><kbd>${c.k}</kbd><span class="desc">${c.d}</span></div>`).join('')}
+      </div>
+      ${sec.tip && !query ? `<div class="tip">${sec.tip}</div>` : ''}
+    </div>`;
+  }).join('');
+  grid.innerHTML = html || `<div class="no-results">Aucune commande trouvée pour « ${query} »</div>`;
+}
+
+document.getElementById('tabs').addEventListener('click', e => {
+  const btn = e.target.closest('.tab');
+  if (!btn) return;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  activeTab = btn.dataset.cat;
+  buildGrid();
+});
+
+buildGrid();
+</script>
+</body>
+</html>
