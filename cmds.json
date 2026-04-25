@@ -1,0 +1,85 @@
+ [
+  {
+    "cat": "navigation",
+    "title": "Navigation rapide",
+    "color": "#c8f135",
+    "tip": "Préfixez un chiffre pour répéter : 5j descend 5 lignes, 3w saute 3 mots.",
+    "cmds": [
+      {"k":"h j k l","d":"Gauche / bas / haut / droite"},
+      {"k":"w / b","d":"Mot suivant / précédent (début)"},
+      {"k":"e / ge","d":"Fin de mot suivant / précédent"},
+      {"k":"W / B / E","d":"Idem, ponctuation incluse"},
+      {"k":"0 / ^","d":"Début de ligne / premier char non-blanc"},
+      {"k":"$ / g_","d":"Fin de ligne / dernier char non-blanc"},
+      {"k":"gg / G","d":"Première / dernière ligne du fichier"},
+      {"k":"42G","d":"Aller à la ligne 42"},
+      {"k":"H / M / L","d":"Haut / milieu / bas de l'écran visible"},
+      {"k":"Ctrl+d / Ctrl+u","d":"Descend / monte d'une demi-page"},
+      {"k":"Ctrl+f / Ctrl+b","d":"Page suivante / précédente"},
+      {"k":"zz / zt / zb","d":"Centrer / haut / bas l'écran sur curseur"},
+      {"k":"%","d":"Aller à la parenthèse/accolade correspondante"},
+      {"k":"{ / }","d":"Paragraphe / bloc précédent / suivant"},
+      {"k":"fx / Fx","d":"Chercher caractère x avant / arrière"},
+      {"k":"tx / Tx","d":"Sauter juste avant le caractère x"},
+      {"k":"; / ,","d":"Répéter f/t/F/T en avant / en arrière"},
+      {"k":"gd / gD","d":"Déclaration locale / globale sous curseur"}
+    ]
+  },
+  {
+    "cat": "navigation",
+    "title": "Marques et sauts",
+    "color": "#c8f135",
+    "tip": "Les marques a-z sont locales au fichier, A-Z sont globales entre fichiers.",
+    "cmds": [
+      {"k":"ma","d":"Poser la marque 'a' à la position actuelle"},
+      {"k":"`a","d":"Sauter exactement à la marque 'a'"},
+      {"k":"'a","d":"Sauter au début de la ligne de la marque 'a'"},
+      {"k":"``","d":"Revenir à la position avant le dernier saut"},
+      {"k":"`.","d":"Aller au dernier emplacement modifié"},
+      {"k":"`0","d":"Position à la dernière fermeture de Vim"},
+      {"k":"Ctrl+o / Ctrl+i","d":"Reculer / avancer dans la liste des sauts"},
+      {"k":"g; / g,","d":"Reculer / avancer dans les changements"},
+      {"k":":jumps","d":"Lister l'historique des sauts"},
+      {"k":":marks","d":"Afficher toutes les marques"},
+      {"k":"Ctrl+]","d":"Sauter vers le tag sous le curseur (ctags)"}
+    ]
+  },
+  {
+    "cat": "edition",
+    "title": "Insertion de texte",
+    "color": "#35f1c8",
+    "tip": "Ctrl+o en mode insert permet d'exécuter une commande normale puis revenir.",
+    "cmds": [
+      {"k":"i / I","d":"Insérer avant curseur / début de ligne"},
+      {"k":"a / A","d":"Ajouter après curseur / fin de ligne"},
+      {"k":"o / O","d":"Nouvelle ligne en dessous / au-dessus"},
+      {"k":"ea","d":"Ajouter à la fin du mot courant"},
+      {"k":"Ctrl+n / Ctrl+p","d":"Autocomplétion suivante / précédente"},
+      {"k":"Ctrl+r a","d":"Coller le registre 'a' en mode insert"},
+      {"k":"Ctrl+t / Ctrl+d","d":"Indenter / dé-indenter en mode insert"},
+      {"k":"Ctrl+w","d":"Supprimer le mot avant curseur (insert)"},
+      {"k":"Esc / Ctrl+c","d":"Quitter le mode insertion"}
+    ]
+  },
+  {
+    "cat": "edition",
+    "title": "Opérateurs d'édition",
+    "color": "#35f1c8",
+    "tip": "La puissance de Vim = opérateur + motion : dw, ci\", y3j, >iB, etc.",
+    "cmds": [
+      {"k":"r / R","d":"Remplacer un caractère / mode remplacement"},
+      {"k":"ciw","d":"Changer le mot entier"},
+      {"k":"ci\" / ci(","d":"Changer le contenu entre \" ou ("},
+      {"k":"cw / ce / cc","d":"Changer fin de mot / mot / ligne entière"},
+      {"k":"C","d":"Changer jusqu'à la fin de la ligne"},
+      {"k":"s / S","d":"Substituer un caractère / toute la ligne"},
+      {"k":"J / gJ","d":"Joindre la ligne du bas"},
+      {"k":"gu{motion}","d":"Passer en minuscules"},
+      {"k":"gU{motion}","d":"Passer en majuscules"},
+      {"k":"g~{motion}","d":"Inverser la casse"},
+      {"k":"xp","d":"Transposer deux caractères"},
+      {"k":".","d":"Répéter la dernière commande"},
+      {"k":"u / Ctrl+r","d":"Annuler / Refaire"}
+    ]
+  }
+]
